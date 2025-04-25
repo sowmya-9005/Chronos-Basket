@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - Chronos Basket</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+        }
+        .header {
+            background-color: green;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .container {
+            width: 60%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            margin-top: 20px;
+        }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .cart-item span {
+            font-size: 18px;
+        }
+        .remove-btn {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .checkout-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: orange;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            font-size: 18px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+        .back-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: green;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            font-size: 18px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+        .total {
+            font-size: 20px;
+            font-weight: bold;
+            text-align: right;
+            margin-top: 10px;
+        }
+    </style>
+    <script>
+        function loadCart() {
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            let cartContainer = document.getElementById("cart-items");
+            let totalPrice = 0;
+            cartContainer.innerHTML = "";
+
+            if (cart.length === 0) {
+                cartContainer.innerHTML = "<p>Your cart is empty!</p>";
+                document.getElementById("total-price").innerText = "₹0";
+                return;
+            }
+
+            cart.forEach((item, index) => {
+                totalPrice += item.price * item.quantity;
+                let itemRow = document.createElement("div");
+                itemRow.className = "cart-item";
+                itemRow.innerHTML = `
+                    <span>${item.name} (x${item.quantity})</span>
+                    <span>₹${item.price * item.quantity}</span>
+                    <button class="remove-btn" onclick="removeFromCart(${index})">Remove</button>
+                `;
+                cartContainer.appendChild(itemRow);
+            });
+
+            document.getElementById("total-price").innerText = "₹" + totalPrice;
+        }
+
+        function removeFromCart(index) {
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            cart.splice(index, 1);
+            localStorage.setItem("cart", JSON.stringify(cart));
+            loadCart();
+        }
+
+        function checkout() {
+            window.location.href = "checkout.html";
+        }
+
+        window.onload = loadCart;
+    </script>
+</head>
+<body>
+
+    <div class="header">Shopping Cart</div>
+
+    <div class="container">
+        <div id="cart-items"></div>
+        <div class="total">Total: <span id="total-price">₹0</span></div>
+        <button class="checkout-btn" onclick="checkout()">Proceed to Checkout</button>
+        <a class="back-btn" href="groceries.html">Continue Shopping</a>
+    </div>
+
+</body>
+</html>
